@@ -3,11 +3,13 @@ let diagnosticLines: string[] = [];
 let diagnosticTags = [
   "KURASI // PRODUK PILIHAN",
 ];
+let tagInterval = 5000;
 try {
   const config = await import("../../content/config.json", { assert: { type: "json" } });
   const cfg = config.default || config;
   if (cfg.diagnosticLines) diagnosticLines = cfg.diagnosticLines;
   if (cfg.diagnosticTags) diagnosticTags = cfg.diagnosticTags;
+  if (cfg.tagInterval) tagInterval = cfg.tagInterval;
 } catch {}
 
 const linesJson = JSON.stringify(diagnosticLines);
@@ -20,6 +22,7 @@ const tagsJson = JSON.stringify(diagnosticTags);
   aria-hidden="true"
   data-lines={linesJson}
   data-tags={tagsJson}
+  data-interval={tagInterval}
 >
   <div
     class="absolute inset-0 flex flex-col items-center justify-center px-[24px]"
@@ -49,6 +52,7 @@ const tagsJson = JSON.stringify(diagnosticTags);
     var container = document.querySelector('[data-tags]');
     if (container) {
       var tags = JSON.parse(container.getAttribute('data-tags'));
+      var interval = parseInt(container.getAttribute('data-interval'), 10) || 5000;
       if (tags && tags.length > 1) {
         var idx = 0;
         setInterval(function() {
@@ -58,7 +62,7 @@ const tagsJson = JSON.stringify(diagnosticTags);
             tagEl.textContent = tags[idx];
             tagEl.style.opacity = '1';
           }, 400);
-        }, 5000);
+        }, interval);
       }
     }
   }

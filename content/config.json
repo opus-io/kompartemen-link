@@ -5,6 +5,7 @@
   "accentColor": "#7A8C6E",
   "bgPrimary": "#F5F0E8",
   "diagnosticLines": [],
+  "tagInterval": 5000,
   "diagnosticTags": [
     "KURASI // PRODUK PILIHAN"
   ],
