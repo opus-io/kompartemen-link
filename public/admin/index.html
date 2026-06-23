@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://api.github.com https://raw.githubusercontent.com; img-src 'self' https: data:; frame-src *; base-uri 'self'; form-action 'none';" />
+  <title>Admin - @kompartemen</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F5F0E8;
+      --bg2: #EDE8DF;
+      --bg3: #E5E0D7;
+      --border: #C8C4BC;
+      --olive: #7A8C6E;
+      --sage: #B5C0A8;
+      --green: #7A8C6E;
+      --text: #2E2B27;
+      --text2: #8A8680;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+    .container { max-width: 800px; margin: 0 auto; }
+
+    .login-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 48px 32px;
+      border-radius: 10px;
+      margin-top: 10vh;
+      text-align: center;
+    }
+    .login-box h1 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; margin-bottom: 16px; color: var(--olive); }
+    .login-box p { color: var(--text2); font-size: 14px; margin-bottom: 16px; }
+    .login-box input {
+      width: 100%; max-width: 400px; padding: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-family: inherit; font-size: 14px;
+      border-radius: 6px; margin-bottom: 12px;
+    }
+    .login-box input:focus { outline: none; border-color: var(--olive); }
+    .login-box .help { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+    .login-box .help a { color: var(--olive); }
+
+    .btn {
+      padding: 12px 32px; border: 1px solid var(--border);
+      background: var(--bg2); color: var(--text); font-family: inherit;
+      font-size: 14px; cursor: pointer; border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover { border-color: var(--olive); color: var(--olive); }
+    .btn-primary { background: var(--olive); color: #fff; border-color: var(--olive); font-weight: 500; }
+    .btn-primary:hover { background: #6B7D5F; color: #fff; }
+    .btn-danger { border-color: #C0392B; color: #C0392B; }
+    .btn-danger:hover { background: #C0392B; color: #fff; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+    .btn-green { border-color: var(--olive); color: var(--olive); }
+    .btn-green:hover { background: var(--olive); color: #fff; }
+
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--olive); }
+    .header .user-info { font-size: 12px; color: var(--text2); }
+    .header .logout { color: var(--text2); cursor: pointer; font-size: 12px; }
+    .header .logout:hover { color: var(--olive); }
+
+    .tabs {
+      display: flex; gap: 8px; margin-bottom: 24px;
+      border-bottom: 1px solid var(--border); padding-bottom: 8px;
+    }
+    .tab {
+      padding: 8px 20px; cursor: pointer; font-size: 13px;
+      color: var(--text2); border: 1px solid transparent;
+      border-radius: 6px; transition: all 0.2s;
+    }
+    .tab:hover { color: var(--text); border-color: var(--border); }
+    .tab.active { color: var(--olive); border-color: var(--olive); background: var(--bg2); }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .toolbar .count { font-size: 13px; color: var(--text2); }
+    .product-list { display: flex; flex-direction: column; gap: 12px; }
+    .product-item {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.2s;
+    }
+    .product-item:hover { border-color: var(--olive); }
+    .product-item .info h3 { font-size: 15px; color: var(--text); font-family: 'DM Serif Display', serif; }
+    .product-item .info .meta { font-size: 12px; color: var(--text2); margin-top: 4px; }
+    .product-item .info .meta .featured-badge { color: var(--olive); margin-right: 8px; }
+    .product-item .actions { display: flex; gap: 8px; }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(46, 43, 39, 0.5); z-index: 100;
+      align-items: flex-start; justify-content: center;
+      padding: 32px 20px; overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 32px; width: 100%; max-width: 600px;
+      margin-top: 5vh;
+    }
+    .modal h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--olive); margin-bottom: 24px; }
+    .modal .field { margin-bottom: 16px; }
+    .modal .field label {
+      display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; letter-spacing: 0.06em;
+    }
+    .modal .field input, .modal .field textarea, .modal .field select {
+      width: 100%; padding: 10px; background: var(--bg);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 13px; border-radius: 6px;
+    }
+    .modal .field input:focus, .modal .field textarea:focus { outline: none; border-color: var(--olive); }
+    .modal .field textarea { min-height: 80px; resize: vertical; }
+    .modal .field.checkbox { display: flex; align-items: center; gap: 8px; }
+    .modal .field.checkbox input { width: auto; }
+    .modal .field.checkbox label { margin-bottom: 0; cursor: pointer; }
+    .modal .field-row { display: flex; gap: 12px; }
+    .modal .field-row .field { flex: 1; }
+    .modal .form-actions {
+      display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;
+    }
+    .modal .sub-list { margin-top: 8px; }
+    .modal .sub-item {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+    }
+    .modal .sub-item input, .modal .sub-item select { flex: 1; }
+    .modal .sub-item .btn-sm { flex: 0; }
+    .modal .add-sub { margin-top: 4px; }
+
+    .config-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .config-grid .full { grid-column: 1 / -1; }
+    .config-section {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px; margin-bottom: 20px;
+    }
+    .config-section h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px; font-weight: 400; color: var(--olive); margin-bottom: 16px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .config-section .field { margin-bottom: 12px; }
+    .config-section .field label {
+      display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px;
+    }
+    .config-section .field input, .config-section .field textarea {
+      width: 100%; padding: 10px; background: var(--bg);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 13px; border-radius: 6px;
+    }
+    .config-section .field input:focus { outline: none; border-color: var(--olive); }
+
+    .logo-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+    }
+    .logo-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px; text-align: center;
+    }
+    .logo-card img {
+      width: 48px; height: 48px; object-fit: contain;
+      margin-bottom: 8px; background: var(--bg);
+      border-radius: 6px; padding: 4px;
+    }
+    .logo-card .logo-name { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+    .logo-card input { width: 100%; padding: 6px; background: var(--bg);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 11px; border-radius: 4px; margin-bottom: 8px;
+    }
+    .logo-card .btn-sm { font-size: 11px; padding: 6px 12px; }
+
+    .preview-frame {
+      width: 100%; height: 600px; border: 1px solid var(--border);
+      border-radius: 10px; background: #fff; margin-top: 12px;
+    }
+
+    .toast {
+      position: fixed; bottom: 32px; right: 32px;
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 12px 20px; border-radius: 8px; font-size: 13px;
+      z-index: 200; transition: all 0.3s;
+      opacity: 0; transform: translateY(10px);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { border-color: var(--olive); }
+    .toast.error { border-color: #C0392B; }
+
+    .empty-state { color: var(--text2); text-align: center; padding: 48px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <!-- Login -->
+    <div id="loginSection" class="login-box">
+      <h1>[ TECH-LINK ADMIN ]</h1>
+      <p>Masukkan GitHub Personal Access Token</p>
+      <input type="password" id="tokenInput" placeholder="github_pat_xxxxx..." />
+      <div class="help">
+        Token perlu scope: <strong>repo</strong><br/>
+        <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Buat token di sini</a>
+      </div>
+      <div id="loginError" style="color:#ef4444;font-size:12px;margin-bottom:13px;display:none"></div>
+      <button class="btn btn-primary" id="loginBtn">LOGIN</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardSection" style="display:none">
+      <div class="header">
+        <div>
+          <h1>[ ADMIN ]</h1>
+          <div class="user-info" id="userInfo"></div>
+        </div>
+        <span class="logout" id="logoutBtn">LOGOUT //</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <span class="tab active" data-tab="tabProducts">Products</span>
+        <span class="tab" data-tab="tabConfig">Configuration</span>
+        <span class="tab" data-tab="tabLogos">Logos</span>
+        <span class="tab" data-tab="tabPreview">Preview</span>
+      </div>
+
+      <!-- TAB: Products -->
+      <div class="section active" id="tabProducts">
+        <div class="toolbar">
+          <span class="count" id="productCount">0 products</span>
+          <button class="btn btn-primary" onclick="showAddForm()">+ NEW PRODUCT</button>
+        </div>
+        <div class="product-list" id="productList"></div>
+      </div>
+
+      <!-- TAB: Configuration -->
+      <div class="section" id="tabConfig">
+        <div class="config-section">
+          <h3>Site Settings</h3>
+          <div class="config-grid">
+            <div class="field full">
+              <label>Site Name</label>
+              <input type="text" id="cfg-siteName" placeholder="@artifak.tech" />
+            </div>
+            <div class="field full">
+              <label>Tagline</label>
+              <input type="text" id="cfg-tagline" placeholder="CURATED DESK SETUPS." />
+            </div>
+            <div class="field full">
+              <label>Avatar URL</label>
+              <input type="text" id="cfg-avatarUrl" placeholder="https://..." />
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveConfig()">SAVE CONFIG</button>
+        </div>
+
+        <div class="config-section">
+          <h3>Cover / Typewriter Text</h3>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:13px">
+            Teks yang diketik perlahan di canvas cover. Satu baris per entri.
+          </p>
+          <div class="field full">
+            <label>Typewriter Lines (satu per baris)</label>
+            <textarea id="cfg-diagnosticLines" rows="5" placeholder="— Sebuah ruang untuk karya."></textarea>
+          </div>
+          <div class="field full">
+            <label>Tags (satu per baris)</label>
+            <textarea id="cfg-diagnosticTags" rows="4" placeholder="kompartemen // solved spaces"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Logos -->
+      <div class="section" id="tabLogos">
+        <div class="config-section">
+          <h3>Platform Logos</h3>
+          <p style="font-size:11px;color:var(--text2);margin-bottom:13px">
+            Upload logo untuk tiap platform. Logo akan disimpan di <code>public/logos/</code>.
+          </p>
+          <div class="logo-grid" id="logoGrid"></div>
+        </div>
+      </div>
+
+      <!-- TAB: Preview -->
+      <div class="section" id="tabPreview">
+        <div class="config-section">
+          <h3>Live Preview</h3>
+          <p style="font-size:11px;color:var(--text2);margin-bottom:13px">
+            Preview halaman utama setelah perubahan di-save.
+          </p>
+          <iframe id="previewFrame" class="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Form -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h2 id="modalTitle">New Product</h2>
+      <div id="modalBody"></div>
+      <div class="form-actions">
+        <button class="btn" onclick="closeModal()">CANCEL</button>
+        <button class="btn btn-primary" id="modalSaveBtn" onclick="saveProduct()">PUBLISH</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const GITHUB_API = 'https://api.github.com';
+    const OWNER = 'opus-io';
+    const REPO = 'kompartemen-link';
+    const BRANCH = 'main';
+    const PRODUCTS_PATH = 'content/products';
+    const CONFIG_PATH = 'content/config.json';
+    const LOGOS_PATH = 'public/logos';
+
+    let token = '';
+    let products = [];
+    let editingIndex = -1;
+    let config = {};
+    let logoKeys = ['SHOPEE', 'TOKOPEDIA', 'TIKTOK'];
+
+    // ---------- UTILS ----------
+    const $ = id => document.getElementById(id);
+
+    function toast(msg, type = 'success') {
+      const el = $('toast');
+      el.textContent = msg;
+      el.className = 'toast ' + type + ' show';
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function showLoader(btn) {
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '...';
+      return () => { btn.disabled = false; btn.textContent = orig; };
+    }
+
+    // ---------- TABS ----------
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        $(tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'tabPreview') loadPreview();
+        if (tab.dataset.tab === 'tabLogos') renderLogoGrid();
+        if (tab.dataset.tab === 'tabConfig') loadConfigForm();
+      });
+    });
+
+    // ---------- AUTH ----------
+    function login() {
+      const t = $('tokenInput').value.trim();
+      if (!t) { showLoginError('Masukkan token!'); return; }
+      token = t;
+      sessionStorage.setItem('techlink_token', token);
+      loadDashboard();
+    }
+
+    $('loginBtn').addEventListener('click', login);
+    $('tokenInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+    function showLoginError(msg) {
+      const el = $('loginError');
+      el.textContent = msg;
+      el.style.display = '';
+    }
+
+    function logout() {
+      token = '';
+      sessionStorage.removeItem('techlink_token');
+      $('loginSection').style.display = '';
+      $('dashboardSection').style.display = 'none';
+    }
+    $('logoutBtn').addEventListener('click', logout);
+
+    // ---------- GITHUB API ----------
+    async function ghFetch(url, options = {}) {
+      const res = await fetch(GITHUB_API + url, {
+        headers: {
+          'Authorization': 'token ' + token,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        ...options,
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+      return res.json();
+    }
+
+    async function getProductFiles() {
+      try {
+        const data = await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + PRODUCTS_PATH + '?ref=' + BRANCH);
+        return Array.isArray(data) ? data.filter(f => f.name.endsWith('.json')) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    async function getFileContent(file) {
+      const res = await fetch(file.download_url);
+      return res.json();
+    }
+
+    async function getSha(path) {
+      try {
+        const data = await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + path + '?ref=' + BRANCH);
+        return data.sha;
+      } catch { return null; }
+    }
+
+    async function commitFile(path, content, message) {
+      let sha = null;
+      try { sha = await getSha(path); } catch {}
+      const body = {
+        message,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+        branch: BRANCH,
+      };
+      if (sha) body.sha = sha;
+      const url = '/repos/' + OWNER + '/' + REPO + '/contents/' + path;
+      return ghFetch(url, { method: 'PUT', body: JSON.stringify(body) });
+    }
+
+    async function deleteFile(path, message) {
+      const sha = await getSha(path);
+      if (!sha) throw new Error('File not found');
+      return ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + path, {
+        method: 'DELETE',
+        body: JSON.stringify({ message, sha, branch: BRANCH }),
+      });
+    }
+
+    async function uploadFileToGitHub(file, folder) {
+      const reader = new FileReader();
+      const base64 = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const ext = file.name.split('.').pop();
+      const safeName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = folder + '/' + safeName;
+      await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + path, {
+        method: 'PUT',
+        body: JSON.stringify({
+          message: 'Upload logo: ' + file.name,
+          content: base64,
+          branch: BRANCH,
+        }),
+      });
+      return 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/' + path;
+    }
+
+    function pickFile(accept, handler) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      if (accept) input.accept = accept;
+      input.onchange = async () => {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+          const url = await uploadFileToGitHub(file, LOGOS_PATH);
+          handler(url, file);
+        } catch(e) {
+          toast('Upload failed: ' + e.message, 'error');
+        }
+      };
+      input.click();
+    }
+
+    function slugify(text) {
+      return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'product';
+    }
+
+    // ---------- CONFIG ----------
+    async function loadConfig() {
+      try {
+        const data = await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + CONFIG_PATH + '?ref=' + BRANCH);
+        const decoded = atob(data.content.replace(/\n/g, ''));
+        config = JSON.parse(decoded);
+      } catch {
+        config = {
+          siteName: '@artifak.tech',
+          tagline: 'CURATED DESK SETUPS.',
+          avatarUrl: '',
+          logos: {}
+        };
+      }
+      if (!config.logos) config.logos = {};
+      logoKeys.forEach(key => {
+        if (!config.logos[key]) config.logos[key] = '';
+      });
+    }
+
+    function loadConfigForm() {
+      $('cfg-siteName').value = config.siteName || '';
+      $('cfg-tagline').value = config.tagline || '';
+      $('cfg-avatarUrl').value = config.avatarUrl || '';
+      $('cfg-diagnosticLines').value = (config.diagnosticLines || []).join('\n');
+      $('cfg-diagnosticTags').value = (config.diagnosticTags || []).join('\n');
+    }
+
+    async function saveConfig() {
+      const diagLines = $('cfg-diagnosticLines').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const diagTags = $('cfg-diagnosticTags').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const updated = {
+        siteName: $('cfg-siteName').value.trim(),
+        tagline: $('cfg-tagline').value.trim(),
+        avatarUrl: $('cfg-avatarUrl').value.trim(),
+        diagnosticLines: diagLines,
+        diagnosticTags: diagTags,
+        logos: config.logos || {}
+      };
+      try {
+        await commitFile(CONFIG_PATH, updated, 'Update site config');
+        config = updated;
+        toast('Config saved!');
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      }
+    }
+
+    // ---------- LOGOS ----------
+    function renderLogoGrid() {
+      const grid = $('logoGrid');
+      grid.innerHTML = logoKeys.map(key => `
+        <div class="logo-card">
+          <img src="${config.logos[key] || ''}" alt="${key}" onerror="this.style.display='none'" />
+          <div class="logo-name">${key}</div>
+          <input type="text" id="logo-url-${key}" value="${(config.logos[key] || '').replace(/"/g, '&quot;')}" placeholder="Logo URL" />
+          <div style="display:flex;gap:8px;justify-content:center">
+            <button class="btn btn-sm" onclick="updateLogoUrl('${key}')">SAVE</button>
+            <button class="btn btn-sm btn-green" onclick="uploadLogo('${key}')">UPLOAD</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function updateLogoUrl(key) {
+      const url = $('logo-url-' + key).value.trim();
+      if (!url) { toast('Masukkan URL!', 'error'); return; }
+      config.logos[key] = url;
+      try {
+        await commitFile(CONFIG_PATH, {
+          ...config,
+          logos: config.logos
+        }, 'Update logo: ' + key);
+        toast(key + ' logo updated!');
+        renderLogoGrid();
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      }
+    }
+
+    function uploadLogo(key) {
+      pickFile('image/*', async (url) => {
+        config.logos[key] = url;
+        try {
+          await commitFile(CONFIG_PATH, {
+            ...config,
+            logos: config.logos
+          }, 'Upload logo: ' + key);
+          toast(key + ' logo uploaded!');
+          renderLogoGrid();
+        } catch (e) {
+          toast('Error: ' + e.message, 'error');
+        }
+      });
+    }
+
+    // ---------- LOAD ----------
+    async function loadDashboard() {
+      $('loginSection').style.display = 'none';
+      $('dashboardSection').style.display = '';
+      $('loginError').style.display = 'none';
+
+      try {
+        const user = await ghFetch('/user');
+        $('userInfo').textContent = 'Logged in as: ' + user.login;
+      } catch (e) {
+        toast('Token invalid!', 'error');
+        logout();
+        return;
+      }
+
+      await loadConfig();
+      await loadProducts();
+      loadConfigForm();
+    }
+
+    async function loadProducts() {
+      const files = await getProductFiles();
+      products = [];
+      for (const f of files) {
+        try {
+          const data = await getFileContent(f);
+          products.push({ ...data, _file: f.name });
+        } catch { /* skip corrupt */ }
+      }
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const list = $('productList');
+      $('productCount').textContent = products.length + ' products';
+
+      if (products.length === 0) {
+        list.innerHTML = '<div class="empty-state">No products yet. Click "+ NEW PRODUCT" to start.</div>';
+        return;
+      }
+
+      list.innerHTML = products.map((p, i) => `
+        <div class="product-item">
+          <div class="info">
+            <h3>${p.featured ? '<span class="featured-badge">✦</span>' : ''}${escHtml(p.title)}</h3>
+            <div class="meta">
+              ${p.featured ? '<span class="featured-badge">FEATURED</span>' : ''}
+              ${p.badge || ''} &middot; ${(p.links||[]).length} link(s) &middot; ${p.tags ? p.tags.join(', ') : ''}
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-sm" onclick="showEditForm(${i})">EDIT</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteProduct(${i})">DEL</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s || '';
+      return div.innerHTML;
+    }
+
+    // ---------- FORM ----------
+    function showAddForm() {
+      editingIndex = -1;
+      $('modalTitle').textContent = 'New Product';
+      renderForm({
+        title: '', imageAlt: '', image: '', featured: false,
+        badge: 'STANDARD_ISSUE', tags: [], defaultUrl: 'https://',
+        description: '', links: [{ label: 'ACCESS //', href: 'https://', color: 'white' }],
+        variant: 'standard', rating: 0, sold: 0, shortDesc: '',
+      });
+      $('modal').classList.add('active');
+    }
+
+    function showEditForm(index) {
+      editingIndex = index;
+      $('modalTitle').textContent = 'Edit Product';
+      renderForm(products[index]);
+      $('modal').classList.add('active');
+    }
+
+    function renderForm(data) {
+      const tagsStr = (data.tags || []).join(', ');
+      const linksHtml = (data.links || []).map((l, i) => `
+        <div class="sub-item">
+          <input type="text" class="link-label" value="${escHtml(l.label)}" placeholder="Label" />
+          <input type="text" class="link-href" value="${escHtml(l.href)}" placeholder="URL" />
+          <select class="link-color">
+            <option value="amber" ${l.color==='amber'?'selected':''}>Amber</option>
+            <option value="green" ${l.color==='green'?'selected':''}>Green</option>
+            <option value="white" ${l.color==='white'?'selected':''}>White</option>
+          </select>
+          <button class="btn btn-sm btn-danger" onclick="removeLink(${i})">X</button>
+        </div>
+      `).join('');
+
+      $('modalBody').innerHTML = `
+        <div class="field">
+          <label>Product Name *</label>
+          <input id="f-title" value="${escHtml(data.title)}" required />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Image URL *</label>
+            <input id="f-image" value="${escHtml(data.image)}" />
+          </div>
+          <div class="field">
+            <label>Image Alt Text *</label>
+            <input id="f-imageAlt" value="${escHtml(data.imageAlt)}" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Badge *</label>
+            <input id="f-badge" value="${escHtml(data.badge)}" />
+          </div>
+          <div class="field">
+            <label>Default URL *</label>
+            <input id="f-defaultUrl" value="${escHtml(data.defaultUrl)}" />
+          </div>
+        </div>
+        <div class="field checkbox">
+          <input type="checkbox" id="f-featured" ${data.featured?'checked':''} />
+          <label for="f-featured">Featured Product?</label>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Rating ★ (1-5)</label>
+            <input id="f-rating" type="number" step="0.1" min="0" max="5" value="${data.rating != null ? data.rating : ''}" placeholder="4.8" />
+          </div>
+          <div class="field">
+            <label>Total Terjual</label>
+            <input id="f-sold" type="number" min="0" value="${data.sold != null ? data.sold : ''}" placeholder="15000" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Short Description (tampil di card)</label>
+          <input id="f-shortDesc" value="${escHtml(data.shortDesc || '')}" placeholder="Mekanikal keyboard 65% dengan triple-mode..." />
+        </div>
+        <div class="field">
+          <label>Tags (comma separated) *</label>
+          <input id="f-tags" value="${escHtml(tagsStr)}" placeholder="SHOPEE, TOKOPEDIA, TIKTOK" />
+        </div>
+        <div class="field">
+          <label>Description *</label>
+          <textarea id="f-description">${escHtml(data.description)}</textarea>
+        </div>
+        <div class="field">
+          <label>Variant *</label>
+          <select id="f-variant">
+            <option value="standard" ${data.variant==='standard'?'selected':''}>Standard</option>
+            <option value="featured" ${data.variant==='featured'?'selected':''}>Featured</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Access Links</label>
+          <div class="sub-list" id="linksContainer">${linksHtml}</div>
+          <button class="btn btn-sm add-sub" onclick="addLink()">+ Add Link</button>
+        </div>
+      `;
+    }
+
+    function addLink() {
+      const container = $('linksContainer');
+      const div = document.createElement('div');
+      div.className = 'sub-item';
+      div.innerHTML = `
+        <input type="text" class="link-label" placeholder="Label" />
+        <input type="text" class="link-href" value="https://" placeholder="URL" />
+        <select class="link-color">
+          <option value="amber">Amber</option>
+          <option value="green">Green</option>
+          <option value="white" selected>White</option>
+        </select>
+        <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">X</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeLink(index) {
+      const container = $('linksContainer');
+      if (container.children.length > 1) {
+        container.children[index].remove();
+      }
+    }
+
+    function getFormData() {
+      const links = [];
+      const container = $('linksContainer');
+      for (const item of container.children) {
+        const label = item.querySelector('.link-label').value.trim();
+        const href = item.querySelector('.link-href').value.trim();
+        const color = item.querySelector('.link-color').value;
+        if (label && href) links.push({ label, href, color });
+      }
+
+      const tagsStr = $('f-tags').value.trim();
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      return {
+        title: $('f-title').value.trim(),
+        imageAlt: $('f-imageAlt').value.trim(),
+        image: $('f-image').value.trim(),
+        featured: $('f-featured').checked,
+        badge: $('f-badge').value.trim(),
+        tags,
+        defaultUrl: $('f-defaultUrl').value.trim(),
+        description: $('f-description').value.trim(),
+        links,
+        variant: $('f-variant').value,
+        rating: parseFloat($('f-rating').value) || undefined,
+        sold: parseInt($('f-sold').value) || undefined,
+        shortDesc: $('f-shortDesc').value.trim() || undefined,
+      };
+    }
+
+    // ---------- SAVE ----------
+    async function saveProduct() {
+      const data = getFormData();
+      if (!data.title) { toast('Product name required!', 'error'); return; }
+      if (!data.image) { toast('Image URL required!', 'error'); return; }
+      if (!data.links.length) { toast('At least 1 link required!', 'error'); return; }
+
+      const btn = $('modalSaveBtn');
+      const done = showLoader(btn);
+
+      try {
+        const filename = slugify(data.title) + '.json';
+
+        if (editingIndex >= 0) {
+          const oldFile = products[editingIndex]._file;
+          if (oldFile !== filename) {
+            await deleteFile(PRODUCTS_PATH + '/' + oldFile, 'Delete: ' + products[editingIndex].title);
+          }
+        }
+
+        await commitFile(
+          PRODUCTS_PATH + '/' + filename, data,
+          editingIndex >= 0 ? 'Update: ' + data.title : 'Add: ' + data.title
+        );
+
+        closeModal();
+        toast(editingIndex >= 0 ? 'Product updated!' : 'Product added!');
+        await loadProducts();
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      } finally {
+        done();
+      }
+    }
+
+    // ---------- DELETE ----------
+    async function deleteProduct(index) {
+      if (!confirm('Delete "' + products[index].title + '"?')) return;
+      try {
+        await deleteFile(PRODUCTS_PATH + '/' + products[index]._file, 'Delete: ' + products[index].title);
+        toast('Product deleted!');
+        await loadProducts();
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      }
+    }
+
+    // ---------- PREVIEW ----------
+    function loadPreview() {
+      const frame = $('previewFrame');
+      const siteUrl = 'https://' + OWNER + '.github.io/' + REPO + '/';
+      frame.src = siteUrl;
+    }
+
+    // ---------- MISC ----------
+    function closeModal() { $('modal').classList.remove('active'); }
+    $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
+
+    // ---------- INIT ----------
+    const saved = sessionStorage.getItem('techlink_token');
+    if (saved) {
+      token = saved;
+      $('tokenInput').value = saved;
+      loadDashboard();
+    }
+  </script>
+</body>
+</html>

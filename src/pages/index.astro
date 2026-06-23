@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DiagnosticCanvas from "../components/DiagnosticCanvas.astro";
+import ProfileHeader from "../components/ProfileHeader.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ProductCard from "../components/ProductCard.astro";
+import { products } from "../data/products";
+
+const sortedProducts = [...products].sort((a, b) => {
+  if (a.featured && !b.featured) return -1;
+  if (!a.featured && b.featured) return 1;
+  return 0;
+});
+---
+
+<BaseLayout title="@kompartemen — Solved Spaces">
+  <DiagnosticCanvas />
+
+  <div class="max-w-md mx-auto w-full px-[20px]">
+    <ProfileHeader />
+
+    <SectionHeading title="Koleksi" />
+
+    <main class="flex flex-col gap-[16px] pb-[48px]">
+      {sortedProducts.map((product, index) => (
+        <ProductCard product={product} index={index} />
+      ))}
+    </main>
+  </div>
+</BaseLayout>

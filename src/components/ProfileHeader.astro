@@ -1,0 +1,36 @@
+---
+let siteName = "@kompartemen";
+let tagline = "SOLVED SPACES.";
+let avatarUrl = "";
+
+try {
+  const config = await import("../../content/config.json", { assert: { type: "json" } });
+  const cfg = (config as any).default || config;
+  if (cfg.siteName) siteName = cfg.siteName;
+  if (cfg.tagline) tagline = cfg.tagline;
+  if (cfg.avatarUrl) avatarUrl = cfg.avatarUrl;
+} catch {}
+---
+
+<header class="text-center pt-[80px] pb-[48px] px-[24px]">
+  {avatarUrl && (
+    <figure class="w-[80px] h-[80px] rounded-full overflow-hidden mx-auto mb-[20px] border-2 border-[#C8C4BC]">
+      <img
+        src={avatarUrl}
+        alt={`Profile for ${siteName}`}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover"
+      />
+    </figure>
+  )}
+  <h1
+    class="font-display text-[38px] md:text-[48px] text-[#2E2B27] leading-[1.1] tracking-[-0.02em] mb-[8px]"
+  >
+    {siteName}
+  </h1>
+  <p class="text-[#8A8680] text-[15px] font-sans tracking-[0.08em] uppercase">
+    {tagline}
+  </p>
+  <div class="section-sep max-w-[120px] mx-auto mt-[32px]"></div>
+</header>
