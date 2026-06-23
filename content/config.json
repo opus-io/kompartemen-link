@@ -4,15 +4,9 @@
   "avatarUrl": "",
   "accentColor": "#7A8C6E",
   "bgPrimary": "#F5F0E8",
-  "diagnosticLines": [
-    "Ruang yang tertata.",
-    "Sistem yang bekerja.",
-    "Pikiran yang lega."
-  ],
+  "diagnosticLines": [],
   "diagnosticTags": [
-    "PILIHAN // TERKURASI",
-    "RUTIN // TERJADWAL",
-    "SISTEM // AKTIF"
+    "KURASI // PRODUK PILIHAN"
   ],
   "logos": {
     "SHOPEE": "",

@@ -1,9 +1,7 @@
 ---
-let diagnosticLines = [
-  "Ruang yang tertata.",
-];
+let diagnosticLines: string[] = [];
 let diagnosticTags = [
-  "PILIHAN // TERKURASI",
+  "KURASI // PRODUK PILIHAN",
 ];
 try {
   const config = await import("../../content/config.json", { assert: { type: "json" } });
@@ -26,17 +24,9 @@ const tagsJson = JSON.stringify(diagnosticTags);
   <div
     class="absolute inset-0 flex flex-col items-center justify-center px-[24px]"
   >
-    <div class="font-sans text-[12px] text-[#8A8680] tracking-[0.15em] uppercase mb-[16px] opacity-0" id="diagTag">
-      PILIHAN // TERKURASI
+    <div class="font-sans text-[13px] text-[#8A8680] tracking-[0.15em] uppercase opacity-0" id="diagTag">
+      KURASI // PRODUK PILIHAN
     </div>
-    <p
-      id="diagLine"
-      class="font-display text-[24px] md:text-[30px] text-[#5A5650] leading-[1.25] italic text-center opacity-0"
-      style="transform: translateY(8px);"
-    >
-      Ruang yang tertata.
-    </p>
-    <div class="w-[40px] h-[1px] bg-[#C8C4BC] mt-[20px] opacity-0" id="diagLineDivider"></div>
   </div>
   <div
     class="absolute bottom-0 left-0 w-full h-[60%] pointer-events-none"
@@ -49,30 +39,13 @@ const tagsJson = JSON.stringify(diagnosticTags);
 <script>
   function init() {
     var tagEl = document.getElementById('diagTag');
-    var lineEl = document.getElementById('diagLine');
-    var dividerEl = document.getElementById('diagLineDivider');
-    if (!lineEl || !tagEl) return;
+    if (!tagEl) return;
 
-    // Gentle fade-in sequence
     setTimeout(function() {
       tagEl.style.transition = 'opacity 0.8s ease';
       tagEl.style.opacity = '1';
     }, 300);
 
-    setTimeout(function() {
-      lineEl.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-      lineEl.style.opacity = '1';
-      lineEl.style.transform = 'translateY(0)';
-    }, 600);
-
-    if (dividerEl) {
-      setTimeout(function() {
-        dividerEl.style.transition = 'opacity 0.8s ease';
-        dividerEl.style.opacity = '1';
-      }, 900);
-    }
-
-    // Cycle tags quietly
     var container = document.querySelector('[data-tags]');
     if (container) {
       var tags = JSON.parse(container.getAttribute('data-tags'));
