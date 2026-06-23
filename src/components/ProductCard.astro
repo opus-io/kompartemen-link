@@ -11,9 +11,6 @@ const { product, index = 0 } = Astro.props;
 const isFeatured = product.variant === "featured";
 const delay = index * 100 + 200;
 
-const fullStars = Math.floor(product.rating || 0);
-const hasHalf = (product.rating || 0) - fullStars >= 0.5;
-
 function formatSold(val?: number): string {
   if (!val) return "";
   if (val >= 1000) return (val / 1000).toFixed(0) + "rb";
@@ -37,10 +34,6 @@ function getLogoForLink(label: string): { logo: string; tag: string } {
 const variantClasses = isFeatured
   ? "border-[#7A8C6E] card-featured-glow"
   : "border-[#C8C4BC] hover:border-[#B8B4AC] shadow-sm";
-
-const titleClasses = isFeatured
-  ? "text-[#2E2B27]"
-  : "text-[#2E2B27]";
 ---
 
 <div
@@ -50,45 +43,54 @@ const titleClasses = isFeatured
   aria-label={`Product: ${product.title}`}
   style={`animation-delay: ${delay}ms`}
 >
-  <div class="p-[20px] flex items-center justify-between gap-[16px] relative z-10">
-    <div class="fast-lane flex items-center gap-[16px] flex-1 cursor-pointer group/fast">
-      <div class="relative border border-[#C8C4BC] rounded-[8px] p-[3px] bg-[#E5E0D7] transition-all duration-300 group-hover/fast:border-[#7A8C6E]">
+  {isFeatured && (
+    <div class="absolute inset-0 rounded-[12px] pointer-events-none" style="background: radial-gradient(circle at 50% 0%, rgba(122,140,110,0.08) 0%, transparent 70%);"></div>
+  )}
+
+  <div
+    class="absolute top-0 right-0 bg-[#E5E0D7] border-b border-l border-[#C8C4BC] px-2 py-1 rounded-bl-[8px] z-20"
+  >
+    <span class="font-sans text-[9px] text-[#8A8680] tracking-[0.06em]">ID:{product.id}</span>
+  </div>
+
+  <div class="p-[21px] flex items-center justify-between gap-[13px] relative z-10">
+    <div class="fast-lane flex items-center gap-[13px] flex-1 cursor-pointer group/fast">
+      <div class="relative border border-[#C8C4BC] rounded-[8px] p-[3px] bg-[#E5E0D7] transition-all duration-300 group-hover/fast:border-[#7A8C6E] group-hover/fast:shadow-[0_0_13px_rgba(122,140,110,0.15)]">
         <img
           src={product.image}
           alt={product.imageAlt}
           loading="lazy"
           decoding="async"
-          class="w-[56px] h-[56px] object-cover rounded-[6px] opacity-100 transition-all duration-300 group-hover/fast:scale-[1.03]"
+          class="w-[55px] h-[55px] object-cover rounded-[6px] transition-all duration-300 group-hover/fast:opacity-100 group-hover/fast:scale-[1.04]"
         />
       </div>
       <div class="flex-1 min-w-0">
         {
           product.featured ? (
-            <span class="text-[10px] font-sans text-[#7A8C6E] tracking-[0.12em] uppercase mb-[4px] block">
+            <span class="text-[9px] font-sans text-[#7A8C6E] tracking-[0.12em] uppercase mb-[4px] block flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#7A8C6E] animate-pulse" />
               {product.badge}
             </span>
           ) : (
-            <span class="text-[10px] font-sans text-[#8A8680] tracking-[0.12em] uppercase mb-[4px] block">
+            <span class="text-[8px] font-sans text-[#8A8680] uppercase tracking-[0.1em] mb-[4px] block">
               {product.badge}
             </span>
           )
         }
-        <h2
-          class={`text-[17px] font-display leading-tight transition-colors ${titleClasses} group-hover/fast:text-[#7A8C6E]`}
-        >
+        <h2 class="text-[15px] font-display transition-colors leading-tight text-[#2E2B27] group-hover/fast:text-[#7A8C6E]/80">
           {product.title}
         </h2>
 
         {(product.rating || product.sold) && (
-          <div class="flex items-center gap-[8px] mt-[4px]">
+          <div class="flex items-center gap-[8px] mt-[5px]">
             {product.rating && (
-              <span class="flex items-center gap-[2px] text-[12px] text-[#8A8680]">
-                <span class="text-[#7A8C6E] text-[13px]">★</span>
+              <span class="flex items-center gap-[2px] text-[11px] text-[#8A8680]">
+                <span class="text-[#7A8C6E] text-[12px]">★</span>
                 {product.rating}
               </span>
             )}
             {product.sold && (
-              <span class="text-[12px] text-[#8A8680]">
+              <span class="text-[11px] text-[#8A8680]">
                 {formatSold(product.sold)} terjual
               </span>
             )}
@@ -96,26 +98,26 @@ const titleClasses = isFeatured
         )}
 
         {product.shortDesc && (
-          <p class="text-[13px] font-sans text-[#8A8680] mt-[4px] leading-snug line-clamp-1">
+          <p class="text-[11px] font-sans text-[#8A8680] mt-[5px] leading-snug line-clamp-1">
             {product.shortDesc}
           </p>
         )}
 
         {product.tags.length > 0 && (
-          <div class="flex gap-[6px] mt-[8px] flex-wrap">
+          <div class="flex gap-[6px] mt-[7px] flex-wrap">
             {product.tags.map((tag) => {
               const logoPath = getPlatformLogo(tag);
               return (
-                <span class="inline-flex items-center gap-1.5 bg-[#B5C0A8] px-[6px] py-[2px] rounded-[4px]">
+                <span class="inline-flex items-center gap-1.5 bg-[#B5C0A8] px-[7px] py-[3px] rounded-[4px]">
                   {logoPath && (
                     <img
                       src={logoPath}
                       alt=""
-                      class="w-[11px] h-[11px] object-contain"
+                      class="w-[13px] h-[13px] object-contain"
                       loading="lazy"
                     />
                   )}
-                  <span class="text-[10px] font-sans text-[#2E2B27] tracking-[0.08em] uppercase">{tag}</span>
+                  <span class="text-[9px] font-sans text-[#2E2B27] tracking-[0.08em] uppercase">{tag}</span>
                 </span>
               );
             })}
@@ -125,7 +127,7 @@ const titleClasses = isFeatured
     </div>
 
     <button
-      class="toggle-btn w-[32px] h-[32px] rounded-[4px] bg-[#E5E0D7] hover:bg-[#D8D3CA] border border-[#C8C4BC] flex items-center justify-center transition-colors shrink-0"
+      class="toggle-btn w-[34px] h-[34px] rounded-[4px] bg-[#E5E0D7] hover:bg-[#D8D3CA] border border-[#C8C4BC] flex items-center justify-center transition-colors shrink-0"
       aria-label={`Toggle details for ${product.title}`}
       aria-expanded="false"
     >
@@ -135,37 +137,38 @@ const titleClasses = isFeatured
         stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
       </svg>
     </button>
   </div>
 
   <div class="glass-accordion border-t border-[#C8C4BC] bg-[#E5E0D7]">
-    <div class="p-[20px] flex flex-col gap-[20px]">
-      <p class="text-[14px] font-sans text-[#5A5650] leading-relaxed">
+    <div class="p-[21px] flex flex-col gap-[21px]">
+      <p class="text-[12px] font-sans text-[#5A5650] leading-relaxed border-l-2 border-[#C8C4BC] pl-3">
+        <strong class="text-[#2E2B27] block mb-[2px] text-[11px] tracking-[0.06em] uppercase">Catatan:</strong>
         {product.description}
       </p>
 
-      <div class="flex flex-col gap-[12px]">
+      <div class="flex flex-col gap-[13px]">
         <span class="text-[10px] font-sans text-[#8A8680] tracking-[0.14em] uppercase">
           Tersedia di:
         </span>
-        <div class="flex gap-[12px] flex-wrap">
+        <div class="flex gap-[13px] flex-wrap">
           {product.links.map((link) => {
             const { logo, tag } = getLogoForLink(link.label);
             return (
               <a
                 href={link.href}
-                class="flex items-center gap-[8px] bg-[#EDE8DF] border border-[#C8C4BC] hover:border-[#7A8C6E] hover:bg-[#E5E0D7] px-[12px] py-[6px] rounded-[6px] transition-all duration-200"
+                class="flex items-center gap-[8px] bg-[#EDE8DF] border border-[#C8C4BC] hover:border-[#7A8C6E] hover:bg-[#E5E0D7] px-[13px] py-[8px] rounded-[6px] transition-all duration-200"
               >
                 {logo && (
                   <img
                     src={logo}
                     alt={tag}
-                    class="w-[16px] h-[16px] object-contain desaturate"
+                    class="w-[18px] h-[18px] object-contain"
                   />
                 )}
-                <span class="text-[12px] font-sans text-[#2E2B27]">
+                <span class="text-[11px] font-sans text-[#2E2B27]">
                   {link.label.replace(/ACCESS \/\//, "").trim()}
                 </span>
               </a>

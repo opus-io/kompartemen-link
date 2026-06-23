@@ -5,11 +5,16 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<div class="mb-[20px] flex flex-col items-center text-center gap-[8px]">
+<div class="mb-[13px] flex items-center gap-[10px]">
+  <div class="flex gap-1 opacity-60">
+    <div class="w-1 h-3 bg-[#7A8C6E]"></div>
+    <div class="w-0.5 h-3 bg-[#7A8C6E]"></div>
+    <div class="w-2 h-3 bg-[#7A8C6E]"></div>
+  </div>
   <h3
-    class="text-[11px] font-sans text-[#8A8680] uppercase tracking-[0.14em] leading-none"
+    class="text-[11px] font-sans text-[#8A8680] uppercase tracking-[0.2em] leading-none"
   >
     {title}
   </h3>
-  <div class="section-sep w-[40px]"></div>
+  <div class="h-[1px] flex-1" style="background: linear-gradient(to right, #C8C4BC, transparent);"></div>
 </div>
